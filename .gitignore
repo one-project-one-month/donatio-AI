@@ -25,5 +25,4 @@ dist/
 Thumbs.db
 
 # Ignore environment variable files
-#.env
-.python-version
+.env
