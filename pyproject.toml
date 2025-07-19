@@ -5,6 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "flask>=3.1.1",
-    "requests>=2.32.4",
+    "easyocr>=1.7.2",
+    "fastapi>=0.115.14",
+    "numpy>=2.3.1",
+    "opencv-python>=4.11.0.86",
+    "pytest>=8.4.1",
+    "python-multipart>=0.0.20",
+    "uvicorn>=0.35.0",
 ]
