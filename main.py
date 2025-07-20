@@ -28,7 +28,7 @@ async def preload_model():
     loop = asyncio.get_event_loop()
     # preload the model (non-blocking startup)
     await loop.run_in_executor(None, lambda: easyocr.Reader(['en', 'my'], gpu=False))
-    reader = easyocr.Reader(['en', 'my'], gpu=False)  # final model reference
+    reader = easyocr.Reader(gpu=False)  # final model reference
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
