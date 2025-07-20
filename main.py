@@ -1,27 +1,38 @@
-from flask import Flask, render_template, request
-import requests
+from fastapi import FastAPI, UploadFile, File
+from fastapi.responses import JSONResponse
+from kpay_processor import KPaySlipProcessor
+import shutil
 import os
-url = f"https://graph.facebook.com/v21.0/me"
+from uuid import uuid4
+from fastapi.middleware.cors import CORSMiddleware
 
-params = {
-    "fields": "name",
-    "access_token": os.getenv("FB_ACCESS_TOKEN")  # Use environment variable for access token
-}
+app = FastAPI(name="KPay_Slip")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-app = Flask(__name__)
+UPLOAD_DIR = "data"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-# @ is python decorater -> wrap one function inside of another
-@app.route("/")
-def index():
+@app.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
     try:
-        response = requests.get(url, params=params, timeout=10)
-        # response.raise_for_status()  # Raise an error for bad responses
-        data = response.json()
-        return data
-    except requests.exceptions.RequestException as e:
-        return f"An error occurred: {e}"
-   
+        file_ext = file.filename.split('.')[-1]
+        filename = f"{uuid4()}.{file_ext}"
+        file_path = os.path.join(UPLOAD_DIR, filename)
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(file.file, buffer)
+
+        processor = KPaySlipProcessor(file_path)
+        result = processor.process()
+
+        os.remove(file_path)
+        return JSONResponse(content=result)
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
+
