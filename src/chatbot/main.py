@@ -126,10 +126,15 @@ def execute_query(state: State):
     execute_query_tool = QuerySQLDatabaseTool(db=db)
     return {"result": execute_query_tool.invoke(state["query"])}
 
-def generate_answer(state: State):
+def sql_generate_answer(state: State):
     """Answer question using retrieved information as context."""
     prompt = (
         "Given the following user question, corresponding SQL query, REMEMBER Dont say about SQL Backend"
+        "You are a helpful, friendly assistant who responds naturally and clearly. "
+        "You adapt your tone to the user's input: summarize lists, provide explanations, or fulfill requests. "
+        "Avoid sounding robotic or overly formal. Use plain language. "
+        "**Do not ask any follow-up questions.** "
+        "Just provide the most relevant, human-like response to the user's input."
         "and SQL result, answer the user question.\n\n"
         f"Question: {state['question']}\n"
         f"SQL Query: {state['query']}\n"
@@ -140,6 +145,7 @@ def generate_answer(state: State):
 
 memory = MemorySaver()
 
+
 builder = StateGraph(State)
 
 
@@ -147,7 +153,7 @@ builder.add_node("supervisor", supervisor)
 builder.add_node("write_user_query", write_user_query)
 builder.add_node("write_org_query", write_org_query)
 builder.add_node("execute_query", execute_query)
-builder.add_node("generate_answer", generate_answer)
+builder.add_node("sql_generate_answer", sql_generate_answer)
 
 builder.add_edge(START, "supervisor")
 
@@ -159,8 +165,11 @@ builder.add_conditional_edges(
 
 builder.add_edge("write_user_query", "execute_query")
 builder.add_edge("write_org_query", "execute_query")
-builder.add_edge("execute_query", "generate_answer")
-builder.add_edge("generate_answer", END)
+builder.add_edge("execute_query", "sql_generate_answer")
+builder.add_edge("sql_generate_answer", END)
+
+graph = builder.compile(checkpointer=memory)
+
 
 graph = builder.compile(checkpointer=memory)
 
@@ -174,7 +183,7 @@ class ModelGenerate(BaseModel):
 def generate(model_generate: ModelGenerate):
     config = {"thread_id":1}
     result = graph.invoke({"sender_role": model_generate.sender_role,"question": model_generate.question},config=config)
-    return result 
+    return result['answer']
 
 if __name__ == "__main__":
     uvicorn.run(app)
