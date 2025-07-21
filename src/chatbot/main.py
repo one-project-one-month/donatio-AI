@@ -145,9 +145,7 @@ def sql_generate_answer(state: State):
 
 memory = MemorySaver()
 
-
 builder = StateGraph(State)
-
 
 builder.add_node("supervisor", supervisor)
 builder.add_node("write_user_query", write_user_query)
