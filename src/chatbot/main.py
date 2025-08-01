@@ -6,6 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from typing_extensions import Annotated
 from langgraph.types import Command
 from langchain_core.prompts import PromptTemplate
+import os
 from langchain_community.tools.sql_database.tool import QuerySQLDatabaseTool
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
@@ -16,7 +17,7 @@ import uvicorn
 load_dotenv()
 model = ChatGroq(model_name="llama-3.3-70b-versatile")
 
-db = SQLDatabase.from_uri("postgresql://postgres:09404996869Ye@localhost:2003/postgres")
+db = SQLDatabase.from_uri(os.getenv('DATABASE_URL'))
 
 class State(TypedDict):
     query: str 
