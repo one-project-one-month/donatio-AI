@@ -51,9 +51,9 @@ class QueryOutput(TypedDict):
     
 
 def supervisor(state: State) -> Command:
-    if state["sender_role"] == "user":
+    if state["sender_role"] == "donar":
         return Command(goto="user_agent", update={})
-    elif state["sender_role"] == "org":
+    elif state["sender_role"] == "organization":
         return Command(goto="org_agent", update={})
     return Command(goto=END, update={})
 
@@ -158,7 +158,7 @@ builder.add_edge(START, "supervisor")
 
 builder.add_conditional_edges(
     "supervisor",
-    lambda s: "write_user_query" if s["sender_role"] == "user" else "write_org_query",
+    lambda s: "write_user_query" if s["sender_role"] == "donar" else "write_org_query",
     {"write_user_query": "write_user_query", "write_org_query": "write_org_query"}
 )
 
