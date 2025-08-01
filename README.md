@@ -64,7 +64,48 @@ Ensure your database is running and accessible via the `DATABASE_URL` environmen
 
 ## Running the Services
 
-### KPay Slip Detection Service
+### Option 1: Using Docker (Recommended)
+
+#### Prerequisites
+- Docker and Docker Compose installed
+- Environment variables configured in `.env` file
+
+#### Quick Start with Docker
+
+1. **Build and run both services:**
+```bash
+docker-compose up --build
+```
+
+2. **Run in background:**
+```bash
+docker-compose up -d --build
+```
+
+3. **Stop services:**
+```bash
+docker-compose down
+```
+
+#### Individual Docker Commands
+
+**KPay Detection Service:**
+```bash
+cd src/kpay_detect
+docker build -t kpay-detect .
+docker run -p 8000:8000 kpay-detect
+```
+
+**SQL Chatbot Service:**
+```bash
+cd src/chatbot
+docker build -t sql-chatbot .
+docker run -p 8001:8001 -e DATABASE_URL=$DATABASE_URL -e GROQ_API_KEY=$GROQ_API_KEY sql-chatbot
+```
+
+### Option 2: Local Development
+
+#### KPay Slip Detection Service
 
 Start the KPay detection service:
 
@@ -75,21 +116,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 The service will be available at `http://localhost:8000`
 
-#### API Endpoints
-
-- **POST** `/upload` - Upload and process KPay slip images
-  - **Request**: Multipart form with image file
-  - **Response**: JSON with extracted amount and metadata
-
-#### Example Usage
-
-```bash
-curl -X POST "http://localhost:8000/upload" \
-  -H "Content-Type: multipart/form-data" \
-  -F "file=@path/to/kpay_slip.jpg"
-```
-
-### SQL Chatbot Service
+#### SQL Chatbot Service
 
 Start the SQL chatbot service:
 
@@ -100,8 +127,14 @@ uvicorn main:app --host 0.0.0.0 --port 8001 --reload
 
 The service will be available at `http://localhost:8001`
 
-#### API Endpoints
+### API Endpoints
 
+#### KPay Detection Service
+- **POST** `/upload` - Upload and process KPay slip images
+  - **Request**: Multipart form with image file
+  - **Response**: JSON with extracted amount and metadata
+
+#### SQL Chatbot Service
 - **POST** `/generate` - Generate SQL-based responses
   - **Request Body**:
     ```json
@@ -112,7 +145,24 @@ The service will be available at `http://localhost:8001`
     ```
   - **Response**: Natural language answer based on database query
 
-#### Example Usage
+### Example Usage
+
+**KPay Detection:**
+```bash
+curl -X POST "http://localhost:8000/upload" \
+  -H "Content-Type: multipart/form-data" \
+  -F "file=@path/to/kpay_slip.jpg"
+```
+
+**SQL Chatbot:**
+```bash
+curl -X POST "http://localhost:8001/generate" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sender_role": "donar",
+    "question": "What are my recent donations?"
+  }'
+```
 
 ```bash
 curl -X POST "http://localhost:8001/generate" \
