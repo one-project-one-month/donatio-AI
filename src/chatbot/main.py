@@ -13,6 +13,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from pydantic import BaseModel
 from fastapi import FastAPI
 import uvicorn 
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 model = ChatGroq(model_name="llama-3.3-70b-versatile")
@@ -173,6 +174,15 @@ graph = builder.compile(checkpointer=memory)
 graph = builder.compile(checkpointer=memory)
 
 app = FastAPI(name="SQL_chatbot")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], 
+    allow_credentials=True,
+    allow_methods=["*"], 
+    allow_headers=["*"],  
+)
+
 
 class ModelGenerate(BaseModel):
     sender_role: str 
