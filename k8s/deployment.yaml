@@ -71,11 +71,3 @@ metadata:
 type: Opaque
 data:
   GROQ_API_KEY: Z3NrX3VwUG5DRUVVOEhvNDJtTUFOY05zV0dkeWIzRlkzaXEwMnJ5bmpaWnkuQk9XRGl6Mjk3aW0=
-# image pull secret
-# aws ecr get-login-password --region ap-southeast-1 | `
-#   kubectl create secret docker-registry images `
-#   --docker-server=592867232570.dkr.ecr.ap-southeast-1.amazonaws.com `
-#   --docker-username=AWS `
-#   --docker-password-stdin `
-#   --namespace=your-namespace
-# start
