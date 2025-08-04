@@ -20,7 +20,7 @@ spec:
         - name: ai-donatio
           image: 592867232570.dkr.ecr.ap-southeast-1.amazonaws.com/eks-cluster/donatio:ai_latest
           ports:
-            - containerPort: 8000
+            - containerPort: 8001
           env:
             - name: GROQ_API_KEY
               valueFrom:
@@ -47,8 +47,8 @@ spec:
     app: ai-donatio
   ports:
     - protocol: TCP
-      port: 8000
-      targetPort: 8000
+      port: 8001
+      targetPort: 8001
 
 ---
 apiVersion: v1
