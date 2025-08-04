@@ -15,7 +15,7 @@ spec:
         app: ai-donatio
     spec:
       imagePullSecrets:
-        - name: ecr_secret
+        - name: ecr-secret
       containers:
         - name: ai-donatio
           image: 592867232570.dkr.ecr.ap-southeast-1.amazonaws.com/eks-cluster/donatio:ai_latest
@@ -60,7 +60,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
   storageClassName: gp2
 
 ---
