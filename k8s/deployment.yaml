@@ -18,7 +18,7 @@ spec:
         - name: ecr-secret
       containers:
         - name: ai-donatio
-          image: 592867232570.dkr.ecr.ap-southeast-1.amazonaws.com/eks-cluster/donatio:ai_latest
+          image: 592867232570.dkr.ecr.ap-southeast-1.amazonaws.com/eks-cluster/donatio:latest
           ports:
             - containerPort: 8001
           env:

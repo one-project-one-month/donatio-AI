@@ -29,10 +29,23 @@ jobs:
       - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+
       - name: Build Django Backend Image
         run: |
-          docker build -t ${{ steps.login-ecr.outputs.registry }}/eks-cluster/donatio:ai_latest -f src/chatbot/Dockerfile .
+          docker build --no-cache -t ${{ steps.login-ecr.outputs.registry }}/eks-cluster/donatio-ai:${{ github.sha }} .
 
       - name: Push Image to Amazon ECR
         run: |
-          docker push ${{ steps.login-ecr.outputs.registry }}/eks-cluster/donatio:ai_latest
+          docker push ${{ steps.login-ecr.outputs.registry }}/eks-cluster/donatio-ai:${{ github.sha }}
+
+      - name: Configure kubeconfig
+        run: |
+          aws eks --region ap-southeast-1 update-kubeconfig --name opom-infra-prod
+
+      - name: Update deployment image
+        run: |
+          kubectl set image deployment/ai-donatio ai-donatio=${{ steps.login-ecr.outputs.registry }}/eks-cluster/donatio-ai:${{ github.sha }} -n donatio
+
+      - name: Wait for rollout to finish
+        run: |
+          kubectl rollout status deployment/ai-donatio -n donatio
