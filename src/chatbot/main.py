@@ -44,7 +44,7 @@ pay attention to which column is in which table.
 Only use the following tables:
 {table_info}
 """
-
+# edit
 class QueryOutput(TypedDict):
     """Generated SQL query."""
 
