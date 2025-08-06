@@ -19,7 +19,7 @@ load_dotenv()
 model = ChatGroq(model_name="llama-3.3-70b-versatile")
 
 db = SQLDatabase.from_uri(os.getenv('DATABASE_URL'))
-
+# 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
 class State(TypedDict):
     query: str 
     question: str 

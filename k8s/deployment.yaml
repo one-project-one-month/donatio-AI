@@ -70,4 +70,4 @@ metadata:
   name: donatio-ai-secret
 type: Opaque
 data:
-  GROQ_API_KEY: Z3NrX3VwUG5DRUVVOEhvNDJtTUFOY05zV0dkeWIzRlkzaXEwMnJ5bmpaWnkuQk9XRGl6Mjk3aW0=
+  GROQ_API_KEY: Z3NrXzl5eldFMVZIWmJheEtHN3dlQ2wzV0dkeWIzRlljbjNFQWhFM2xZaFhiSVl1WHh0dU10TmE=
